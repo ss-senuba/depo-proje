@@ -4,6 +4,10 @@ const Product = require('../models/product');
 // Depo oluşturma
 exports.create = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { name, location } = req.body;
         const newWarehouse = new Warehouse({ name, location });
         await newWarehouse.save();
@@ -16,6 +20,10 @@ exports.create = async (req, res) => {
 // Ana depoya ürün ekleme
 exports.add_product = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { productId, quantity } = req.body;
         const warehouse = await Warehouse.findById(req.params.warehouseId);
         if (!warehouse) {
@@ -49,6 +57,10 @@ exports.add_product = async (req, res) => {
 // Depo güncelleme
 exports.update = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { name, location } = req.body;
         const warehouse = await Warehouse.findById(req.params.warehouseId);
 
@@ -70,6 +82,10 @@ exports.update = async (req, res) => {
 // Depo silme
 exports.delete_depo = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         // Depoyu bul
         const warehouse = await Warehouse.findById(req.params.warehouseId);
 
@@ -91,6 +107,10 @@ exports.delete_depo = async (req, res) => {
 // Tüm depoları listeleme
 exports.list = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const warehouses = await Warehouse.find();
         if (warehouses.length === 0) {
             return res.status(404).json({ message: 'Herhangi bir depo bulunmamaktadır.' });

@@ -4,6 +4,10 @@ const Warehouse = require('../models/main_depo');
 // Alt depo oluşturma
 exports.create_sub_depo = async (req, res) => {
     try {
+         // Kullanıcının rolünü kontrol et
+         if (req.user.role !== 'admin' ||req.user.role !== 'manager' ) {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { name, location, parentWarehouse } = req.body;
         const newSubWarehouse = new SubWarehouse({ name, location, parentWarehouse });
         await newSubWarehouse.save();
@@ -22,6 +26,10 @@ exports.create_sub_depo = async (req, res) => {
 // Alt deponun ana depodan ürün talep etmesi
 exports.request_product = async (req, res) => {
     try {
+           // Kullanıcının rolünü kontrol et
+           if (req.user.role !== 'admin' ||req.user.role !== 'manager' ) {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { warehouseId, productId, quantity } = req.body;
         const warehouse = await Warehouse.findById(warehouseId);
         if (!warehouse) {
@@ -67,6 +75,10 @@ exports.request_product = async (req, res) => {
 // Alt depo güncelleme
 exports.update_sub_depo = async (req, res) => {
     try {
+           // Kullanıcının rolünü kontrol et
+           if (req.user.role !== 'admin' ||req.user.role !== 'manager' ) {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { name, location } = req.body;
         const subWarehouse = await SubWarehouse.findById(req.params.subWarehouseId);
 
@@ -91,6 +103,10 @@ exports.update_sub_depo = async (req, res) => {
 // Alt depo silme
 exports.delete_sub_depo = async (req, res) => {
     try {
+           // Kullanıcının rolünü kontrol et
+           if (req.user.role !== 'admin' ||req.user.role !== 'manager' ) {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         // Alt depoyu bul
         const subWarehouse = await SubWarehouse.findById(req.params.subWarehouseId);
 
@@ -123,6 +139,10 @@ exports.delete_sub_depo = async (req, res) => {
 // Alt depo listeleme
 exports.list_sub_depos = async (req, res) => {
     try {
+           // Kullanıcının rolünü kontrol et
+           if (req.user.role !== 'admin' ||req.user.role !== 'manager' ) {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const warehouse = await Warehouse.findById(req.params.parentWarehouseId).populate('subWarehouses');
         if (!warehouse) {
             return res.status(404).json({ message: 'Ana depo bulunamadı.' });

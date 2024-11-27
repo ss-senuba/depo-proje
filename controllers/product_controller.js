@@ -3,6 +3,10 @@ const Product = require('../models/product');
 // Ürün oluşturma
 exports.create_product = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { name, price, quantity } = req.body;
         const newProduct = new Product({ name, price, quantity });
         await newProduct.save();
@@ -15,6 +19,10 @@ exports.create_product = async (req, res) => {
 // Ürün güncelleme
 exports.update_product = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { id } = req.params; // Güncellenecek ürünün ID'sini parametre olarak alıyoruz
         const { name, price, quantity } = req.body; // Güncellemek istediğimiz alanları alıyoruz
 
@@ -38,6 +46,10 @@ exports.update_product = async (req, res) => {
 // Ürün silme
 exports.delete_product = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { id } = req.params; // Silinecek ürünün ID'sini parametre olarak alıyoruz
         const deletedProduct = await Product.findByIdAndDelete(id); // Ürünü veritabanından silme
 

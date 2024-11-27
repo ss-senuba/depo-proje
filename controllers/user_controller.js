@@ -3,9 +3,9 @@ const { generateToken } = require('../src/auth');
 
 // Kullanıcı kaydı
 exports.register = async (req, res) => {
-    const { name, email,role, password } = req.body;
+    const { name, email, role, password } = req.body;
     try {
-        const user = new User({ name, email,role, password });
+        const user = new User({ name, email, role, password });
         await user.save();
         res.status(201).json({
             _id: user._id,
@@ -47,6 +47,10 @@ exports.update = async (req, res) => {
     const { userId } = req.params;  // userId parametre olarak alınacak
 
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         let user = await User.findById(userId);
 
         if (!user) {
@@ -60,7 +64,7 @@ exports.update = async (req, res) => {
 
         await user.save(); // Güncellenmiş kullanıcıyı kaydet
         res.status(200).json({
-            message:"Güncelleme başarılı",
+            message: "Güncelleme başarılı",
             _id: user._id,
             name: user.name,
             email: user.email,
@@ -77,6 +81,10 @@ exports.delete_user = async (req, res) => {
     const { userId } = req.params;  // userId parametre olarak alınacak
 
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         // Kullanıcıyı userId ile bul ve sil
         const user = await User.findByIdAndDelete(userId);
 
@@ -96,8 +104,8 @@ exports.delete_user = async (req, res) => {
 exports.get_list = async (req, res) => {
     try {
         // Kullanıcının rolünü kontrol et
-        if (req.user.role !== 'admin' && req.user.role !== 'manager') {
-            return res.status(403).json({ message: 'Yasaklı, bu işlemi yapma izniniz yok' });
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
         }
         const users = await User.find(); // Tüm kullanıcıları getir
         res.status(200).json(users); // Kullanıcıları başarıyla döndür

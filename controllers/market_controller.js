@@ -4,6 +4,10 @@ const SubWarehouse = require('../models/sub_depo');
 // Market oluşturma
 exports.create_market = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role == 'user') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { name, location, subWarehouse } = req.body;
         const newMarket = new Market({ name, location, subWarehouse });
         await newMarket.save();
@@ -21,6 +25,10 @@ exports.create_market = async (req, res) => {
 // Marketin alt depodan ürün talep etmesi
 exports.request_product = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role == 'user') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { subWarehouseId, productId, quantity } = req.body;
         const subWarehouse = await SubWarehouse.findById(subWarehouseId);
         if (!subWarehouse) {
@@ -66,6 +74,10 @@ exports.request_product = async (req, res) => {
 // Market güncelleme
 exports.update_market = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role == 'user') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const { name, location, subWarehouse } = req.body;
         const marketId = req.params.marketId;
 
@@ -95,6 +107,10 @@ exports.update_market = async (req, res) => {
 // Market silme
 exports.delete_market = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role == 'user') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const marketId = req.params.marketId;  // URL'den market ID'sini alıyoruz
 
         // 1. Market kaydını bulalım
@@ -131,8 +147,12 @@ exports.delete_market = async (req, res) => {
 // Marketleri listeleme
 exports.list_markets = async (req, res) => {
     try {
+        // Kullanıcının rolünü kontrol et
+        if (req.user.role == 'user') {
+            return res.status(403).json({ message: 'Bu işlemi yapma yetkiniz yok' });
+        }
         const markets = await Market.find().populate('subWarehouse', 'name location');
-        
+
         if (markets.length === 0) {
             return res.status(404).json({ message: 'Hiçbir market bulunamadı.' });
         }
