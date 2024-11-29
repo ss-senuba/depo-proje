@@ -8,4 +8,5 @@ router.post('/create', protect,create_product);
 router.put('/:id',protect, update_product);
 router.delete('/:id',protect,delete_product);
 router.get('/get-products',list_products);
+
 module.exports = router;

@@ -9,4 +9,5 @@ router.post('/:warehouseId/add-product',protect, add_product);
 router.put('/update/:warehouseId',protect, update);
 router.delete('/delete/:warehouseId',protect,delete_depo);
 router.get('/get-list',protect,list); 
+
 module.exports = router;
